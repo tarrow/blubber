@@ -25,12 +25,17 @@ The generated environment files must be copied over the files from https://githu
 
 ### Milestone 0.1
 - Add additional hooks/generators for the HTTP proxy. 
+- Put generation of environment variables in questionnaire
 
 ### Milestone 0.2
 - Add search role
 - Add Browsertest role (chromedriver and mozilla driver services)
 - ESLint for JavaScript files
 - PHP liniting for PHP files
+
+### Milestone 0.3
+- Add wikibase role
+- Add wikidata query service role
 
 ### Far future / Wishlist
 - Configurable roles
