@@ -1,3 +1,8 @@
+const yaml = require( 'js-yaml' );
+const fs   = require( 'fs' );
+const path = require( 'path' );
+const mkdirp = require( 'mkdirp' );
+
 class EnvironmentGenerator {
 
     /**
@@ -8,20 +13,43 @@ class EnvironmentGenerator {
     }
 
     generate( config ) {
-        // TODO use YAML objects
-        const dockerCompose = {};
-        const dockerComposeSetup = {};
+        let dockerCompose = {};
+        let dockerComposeSetup = {};
+        let files = new Map();
 
-        // TODO: If roles have dependencies, toggle roles that are deactiavted but depended on
+        // TODO: If roles have dependencies, toggle roles that are deactivated but depended on
 
-        config.roles.forEach( ( role ) => {
+        for ( let role of Object.keys( config.roles ) ) {
+            if ( !config.roles[ role ] ) {
+                continue;
+            }
             if ( !this.availableRoles.has( role ) ) {
                 throw new Error( 'Unknown role:' + role );
             }
-            this.availableRoles.modifySetup( dockerComposeSetup );
-            this.availableRoles.modifyServices( dockerCompose );
-            this.availableRoles.modifyFiles( dockerCompose, dockerComposeSetup );
-        } );
+            let currentRole = this.availableRoles.get( role );
+            dockerComposeSetup = currentRole.modifySetup( dockerComposeSetup );
+            dockerCompose = currentRole.modifyServices( dockerCompose );
+            currentRole.modifyFiles( files, dockerCompose, dockerComposeSetup );
+        }
+
+        const destinationRoot = config.outputDir || path.dirname( __dirname );
+
+        fs.writeFileSync(
+            path.join( destinationRoot, 'docker-compose.setup.yml' ),
+            yaml.safeDump( dockerComposeSetup )
+        );
+        fs.writeFileSync(
+            path.join( destinationRoot, 'docker-compose.setup.yml' ),
+            yaml.safeDump( dockerCompose )
+        );
+        files.forEach( ( src, dest ) => {
+            const finalDestination = path.join( destinationRoot, dest );
+            console.log( "copying", src, finalDestination );
+            mkdirp( path.dirname( finalDestination ), () => {
+                fs.copyFileSync( src, finalDestination );
+            } );
+        } )
+
     }
 
 }

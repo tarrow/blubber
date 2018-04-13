@@ -1,0 +1,12 @@
+version: 2
+services:
+    phpmyadmin:
+        image: phpmyadmin/phpmyadmin
+        environment:
+         - PMA_USER:root
+         - PMA_PASSWORD:toor
+         - PMA_HOSTS=db-master,db-slave
+         - PMA_ARBITRARY=1
+         - VIRTUAL_HOST=phpmyadmin.mw.localhost
+        volumes:
+          - ./config/phpmyadmin/config.user.inc.php:/etc/phpmyadmin/config.user.inc.php

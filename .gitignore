@@ -60,3 +60,7 @@ typings/
 # next.js build output
 .next
 
+# in case we're accidentally generating in the home dir
+config
+/docker-compose.yml
+/docker-compose.setup.yml

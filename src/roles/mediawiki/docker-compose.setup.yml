@@ -1,0 +1,23 @@
+version: '2'
+
+services:
+
+  db-configure:
+    image: ${DB}:latest
+    environment:
+      - "MYSQL_SLAVE_PASSWORD=toor"
+      - "MYSQL_MASTER_PASSWORD=toor"
+      - "MYSQL_ROOT_PASSWORD=toor"
+      - "MYSQL_REPLICATION_USER=repl"
+      - "MYSQL_REPLICATION_PASSWORD=repl"
+    depends_on:
+     - db-master
+     - db-slave
+    volumes:
+      - ./scripts/mysql_connector.sh:/tmp/mysql_connector.sh
+      - ./scripts/wait-for-it.sh:/tmp/wait-for-it.sh
+    command: /bin/bash -x /tmp/mysql_connector.sh
+
+  web:
+    depends_on:
+     - db-configure

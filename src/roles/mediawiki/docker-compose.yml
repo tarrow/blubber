@@ -1,0 +1,57 @@
+version: '2'
+
+services:
+
+  db-master:
+    image: ${DB}:latest
+    environment:
+      - MYSQL_ROOT_PASSWORD=toor
+    volumes:
+      - sql-data-master:/var/lib/mysql
+      - ./config/mysql/master:/etc/mysql/conf.d/
+
+  db-slave:
+    image: ${DB}:latest
+    environment:
+      - MYSQL_ROOT_PASSWORD=toor
+    volumes:
+      - sql-data-slave:/var/lib/mysql
+      - ./config/mysql/slave:/etc/mysql/conf.d/
+  web:
+    image: webdevops/${PHPORHHVM}-${WEBSERVER}${DOCKERPHPDEV}:${RUNTIMEVERSION}
+    environment:
+     - WEB_DOCUMENT_ROOT=/var/www
+     # Used by various maintenance scripts to find MediaWiki.
+     # Also required for /var/www/index.php - https://phabricator.wikimedia.org/T153882
+     - MW_INSTALL_PATH=/var/www/mediawiki
+     - VIRTUAL_HOST=*.web.mw.localhost
+     - PHP_DEBUGGER=xdebug
+     - XDEBUG_REMOTE_AUTOSTART=1
+     - XDEBUG_REMOTE_HOST=${IDELOCALHOST}
+     - XDEBUG_REMOTE_PORT=9000
+     - XDEBUG_REMOTE_CONNECT_BACK=0
+     - PHP_IDE_CONFIG=serverName=docker
+    depends_on:
+     - db-master
+     - db-slave
+    volumes:
+     - "${DOCKER_MW_PATH}:/var/www/mediawiki"
+     - ./config/mediawiki:/var/www/mediawiki/.docker:ro
+     - ./config/hhvm/php.ini:/etc/hhvm/php.ini:ro
+     - ./config/hhvm/server.ini:/etc/hhvm/server.ini:ro
+     - ./scripts/wait-for-it.sh:/srv/wait-for-it.sh:ro
+     - mw-images:/var/www/mediawiki/images/docker
+
+  nginx-proxy:
+    image: jwilder/nginx-proxy
+    environment:
+     - VIRTUAL_HOST=proxy.mw.localhost
+    ports:
+      - "${DOCKER_MW_PORT}:80"
+    volumes:
+      - /var/run/docker.sock:/tmp/docker.sock:ro
+
+volumes:
+  sql-data-master:
+  sql-data-slave:
+  mw-images:
