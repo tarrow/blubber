@@ -1,5 +1,6 @@
 var inquirer = require('inquirer')
 var Environmentbuilder = require( './src/generatorbuilder' );
+// TODO generate array from roles dir
 var roles = ['phpmyadmin', 'statsd']
 
 var questions = []
