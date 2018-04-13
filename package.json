@@ -1,0 +1,19 @@
+{
+  "name": "blubber",
+  "version": "0.0.1",
+  "description": "Interactive tool for creating Mediawiki development environment based on Docker",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tarrow/blubber.git"
+  },
+  "author": "WMDE",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/tarrow/blubber/issues"
+  },
+  "homepage": "https://github.com/tarrow/blubber#readme"
+}
