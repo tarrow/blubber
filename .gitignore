@@ -62,5 +62,7 @@ typings/
 
 # in case we're accidentally generating in the home dir
 config
+blubber-docker-setup
 /docker-compose.yml
 /docker-compose.setup.yml
+
