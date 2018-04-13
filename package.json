@@ -15,5 +15,8 @@
   "bugs": {
     "url": "https://github.com/tarrow/blubber/issues"
   },
-  "homepage": "https://github.com/tarrow/blubber#readme"
+  "homepage": "https://github.com/tarrow/blubber#readme",
+  "dependencies": {
+    "inquirer": "^5.2.0"
+  }
 }
