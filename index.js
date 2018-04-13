@@ -2,7 +2,9 @@ var inquirer = require('inquirer')
 
 var roles = ['phpmyadmin', 'statsd']
 
-function questionGenerator (name) {
+var questions = []
+
+function includeQuestionGenerator (name) {
 	return {
 		type: 'confirm',
 		name: name,
@@ -11,5 +13,15 @@ function questionGenerator (name) {
 	}
 }
 
-inquirer.prompt(roles.map(questionGenerator))
+var saveQuestion = {
+	type: 'input',
+	name: 'outputDir',
+	message: 'Where would you like to save the output files?\n',
+	default: './blubber-docker-setup'
+}
+
+questions.push(saveQuestion)
+questions = questions.concat(roles.map(includeQuestionGenerator))
+
+inquirer.prompt(questions)
 .then(answers => {console.log(answers)})
